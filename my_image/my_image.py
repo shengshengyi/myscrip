@@ -27,149 +27,19 @@ class my_image:
             '4': '汴京城',
             '5': '芒肠山路'
         }
-        self.prop_dict = {
+        self.herbs_dict = {
             '1': '草药采集1',
-            '2': '草药采集2'
+            '2': '草药采集2',
+            '3': '草药采集3'
+        }
+        self.pet_drinks_dict = {
+            '1': '宠物饮料1',
         }
         self.scene_flag = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg']
-        self.prop_flag = ['1.jpg','2.jpg']
+        self.herbs_flag = ['1.jpg','2.jpg','3.jpg']
+        self.pet_drinks_flag = ['1.jpg']
 
-    def screen_whole_capture(self, name):
-        """
-        截取整个屏幕的图像，并将其保存为指定的图片文件。
-
-        参数：
-        name (str): 保存的图片文件的名称，不包括文件扩展名。
-
-        返回：
-        None
-
-        异常：
-        抛出 IOError 如果截图或文件保存失败。
-        抛出 Exception 如果 mss 模块不可用或存在其他问题。
-        """
-
-        # 实例化 mss 对象，并重名为 sct，固定写法，记着就行
-        with self.sct as sct:
-            # 定义输出文件的路径，包括图像的扩展名 .png
-            output_path = f'../pic/{name}.png'
-            # shot 方法表示截屏，output 参数表示存放的文件名
-            try:
-                sct.shot(output=output_path)
-                logging.info(f"全屏幕截图已保存为 {output_path}")
-            except IOError as e:
-                # 处理文件 I/O 错误
-                logging.error(f"截图或文件保存失败： {e}")
-                raise
-            except Exception as e:
-                # 处理其他可能的异常
-                logging.error(f"发生错误： {e}")
-                raise
-
-    def screen_area_capture(self,name,left,top,width,height):
-        """
-        截取屏幕指定区域的图像，并将其保存为指定的图片文件。
-        参数：
-        name (str): 保存的图片文件的名称，不包括文件扩展名。
-        left (int): 截取区域的左上角 X 坐标。
-        top (int): 截取区域的左上角 Y 坐标。
-        width (int): 截取区域的宽度。
-        height (int): 截取区域的高度。
-        返回：
-        None
-        异常：
-        抛出 IOError 如果截图或文件保存失败。
-        抛出 Exception 如果 mss 模块不可用或存在其他问题。
-        """
-        area = {"left":left,"top":top,"width":width,"height":height}
-        try:
-            # 实例化 mss 对象,并重名为 sct,固定写法,记着就行
-            with self.sct as sct:
-                # 使用 sct 的 grab 方法截取屏幕中某个区域的画面
-                screenshot = sct.grab(area)
-                output_path = f'../pic/{name}.png'
-                # 利用 mss.tools 模块的 to_png 方法,保存截图文件
-                mss.tools.to_png(screenshot.rgb, screenshot.size,
-                                 output=output_path)
-                logging.info(f"屏幕区域截图已保存为 {output_path}")
-        except IOError as e:
-            # 处理IO错误，例如文件无法保存
-            logging.error(f"区域截图或文件保存失败： {e}")
-            raise
-        except Exception as e:
-            # 处理其他可能的错误，例如mss模块不可用
-            logging.error(f"发生错误： {e}")
-            raise
-
-    def screen_area_display(self,left,top,width,height):
-        """
-        显示屏幕指定区域的截图,不保存到本地
-        参数：
-        left (int): 截取区域的左上角 X 坐标。
-        top (int): 截取区域的左上角 Y 坐标。
-        width (int): 截取区域的宽度。
-        height (int): 截取区域的高度。
-        返回：
-        None
-        异常：
-        抛出 IOError 如果截图或显示图片时发生IO错误。
-        抛出 Exception 如果 mss 模块不可用或存在其他问题。
-        """
-        area = {"left":left,"top":top,"width":width,"height":height}
-        try:
-            # 实例化 mss 对象,并重名为 sct,固定写法,记着就行
-            with self.sct as sct:
-                # 使用 sct 的 grab 方法截取屏幕中某个区域的画面
-                screenshot = sct.grab(area)
-            screenshot = np.array(screenshot)
-            cv2.imshow("dnf", screenshot)  # 调用 opencv 的 imshow 方法显示图片
-            logging.info(f"从坐标({left}, {top})截取长{width}宽{height}的区域")
-            cv2.waitKey(0)  # 等待按键，然后关闭窗口, 如果没有这行,图片打开后直接退出
-            cv2.destroyAllWindows()  # 关闭所有 opencv 窗口
-
-        except IOError as e:
-            logging.error(f"截图或显示图片时发生IO错误： {e}")
-            # 这里可以添加更多的错误处理逻辑，例如重试或退出函数
-            raise
-        except Exception as e:
-            logging.error(f"发生意外的错误： {e}")
-            # 这里可以添加更多的错误处理逻辑，例如重试或退出函数
-            raise
-
-    def screen_continuous_display(self, left, top, width, height):
-        """
-        持续显示屏幕指定区域的截图。
-        参数：
-        left: 区域的左边坐标
-        top: 区域的上边坐标
-        width: 区域的宽度
-        height: 区域的高度
-        """
-        area = {"left": left, "top": top, "width": width, "height": height}
-
-        try:
-            # 实例化 mss 对象，并重名为 sct，固定写法，记着就行
-            with self.sct as sct:
-                while True:
-                    try:
-                        # 捕获屏幕指定区域的截图
-                        screenshot = sct.grab(area)
-                        # 将截图转换为numpy数组
-                        screenshot = np.array(screenshot)
-                        # 显示截图
-                        cv2.imshow("dnf", screenshot)
-                        # 如果在5毫秒内按下'q'键，则退出循环
-                        if cv2.waitKey(5) & 0xFF == ord("q"):
-                            cv2.destroyAllWindows()
-                            logging.info(f"退出视频流")
-                            break
-                    except Exception as e:  # 捕获可能发生的任何异常
-                        logging.error(f"发生异常： {e}")
-                        cv2.destroyAllWindows()
-                        break
-        except Exception as e:  # 捕获可能发生的任何异常
-            logging.error(f"发生异常： {e}")
-    def matching_scene(self,scene_gray):
+    def matching_prop(self,scene_gray,matching_para):
         """
         匹配场景函数。
         参数：
@@ -179,79 +49,23 @@ class my_image:
         返回：
         返回匹配到的场景名称，如果匹配失败则返回"未知场景"。
         """
+        if matching_para == "herbs":
+            flag = self.herbs_flag
+            flag_similar = 0.65
+            flag_dict = self.herbs_dict
+            flag_path = '../pic/herbs_flag/'
+        elif matching_para == "pet_drinks":
+            flag = self.pet_drinks_flag
+            flag_similar = 0.65
+            flag_dict = self.pet_drinks_dict
+            flag_path = '../pic/pet_drinks_flag/'
+        elif matching_para == "scene":
+            flag = self.scene_flag
+            flag_similar = 0.85
+            flag_dict = self.scene_dict
+            flag_path = '../pic/scene_flag/'
 
-        flag_dict = self.scene_flag
-        flag_path = '../pic/scene_flag/'
-
-        for i in flag_dict:
-            try:
-                # 获取预设地图场景
-                flag_scene = cv2.imread(flag_path+i)
-                if flag_scene is None:
-                    logging.error(f"无法加载场景图片： {i}")
-                    return "未知场景"
-                flag_scene_gray = cv2.cvtColor(flag_scene, cv2.COLOR_BGR2GRAY)
-                # 在大图片中查找小图片
-                result = cv2.matchTemplate(scene_gray, flag_scene_gray, cv2.TM_CCOEFF_NORMED)
-                # 筛选结果
-                locations = np.where(result >= 0.85)
-                # 用 np 筛选一下结果高于 0.85的
-
-                locations = list(zip(*locations[::-1]))
-                # 将结果再次处理一下，仅保留坐标值
-                if len(locations) > 0:
-                    match = re.match(r'(\d+)', i)
-                    if match:
-                        scene_number = match.group(1)
-                        # 根据匹配到的场景编号返回对应场景名称
-                        return self.scene_dict.get(scene_number,"未知场景")
-                    else:
-                        return None
-            except Exception as e:
-                logging.error(f"处理场景时发生异常： {e}")
-                return "未知场景"
-        return "未知场景"
-
-    #bug 黄泥岗识别成星秀村，应天府西识别成应天府
-    def get_scene(self, left, top, width, height):
-        area = {"left": left, "top": top, "width": width, "height": height}
-        with mss.mss() as sct:
-            scene = '未知'
-            #role_location = (0,0)
-            #获取大图片
-            area_capture = sct.grab(area)#对屏幕 进行截图
-            area_capture = np.array(area_capture)#调用 numpy 库将 mss 库的截屏转换一下,并赋值为变量 quyujieping
-            screen_gray = cv2.cvtColor(area_capture,cv2.COLOR_BGR2GRAY)
-
-            # 判断场景
-            scene = self.matching_scene(screen_gray)
-            print('当前画面在:', scene)
-
-            if scene is not None:
-                return scene
-            else:
-                return "未知地图"
-
-            # cv2.imshow("DNF", area_capture)  # 调用 opencv 的 imshow 方法显示图片
-            # if cv2.waitKey(5) & 0xFF == ord("q"):
-            #     cv2.destroyAllWindows()
-            #     break
-
-    def matching_prop(self,scene_gray):
-        """
-        匹配场景函数。
-        参数：
-        scene_gray：灰度化的场景图片，用于与预设的场景图片进行匹配。
-        matching_param：匹配参数，用于指定使用哪种场景字典和路径进行匹配。
-                        默认None为场景识别，"prop"为道具识别
-        返回：
-        返回匹配到的场景名称，如果匹配失败则返回"未知场景"。
-        """
-
-        flag_dict = self.prop_flag
-        flag_path = '../pic/prop_flag/'
-
-        for i in flag_dict:
+        for i in flag:
             try:
                 # 获取预设地图场景
                 flag_scene = cv2.imread(flag_path+i)
@@ -262,27 +76,27 @@ class my_image:
                 # 在大图片中查找小图片
                 result = cv2.matchTemplate(scene_gray, flag_scene_gray, cv2.TM_CCOEFF_NORMED)
                 # 筛选结果
-                locations = np.where(result >= 0.65)
+                locations = np.where(result >= flag_similar)
                 # 用 np 筛选一下结果高于 0.85的
                 # print(locations)
 
                 locations = list(zip(*locations[::-1]))
-                # print(locations)
+                # print("1",locations)
                 # 将结果再次处理一下，仅保留坐标值
                 if len(locations) > 0:
                     match = re.match(r'(\d+)', i)
                     if match:
                         scene_number = match.group(1)
                         # 根据匹配到的场景编号返回对应场景名称
-                        return self.prop_dict.get(scene_number,"未知物品2")
+                        return flag_dict.get(scene_number,"未知物品2")
                     else:
                         return None
             except Exception as e:
                 logging.error(f"处理场景时发生异常： {e}")
                 return "未知物品3"
-        return "未知物品4"
+        return "未找到" + matching_para
 
-    def get_prop(self, left, top, width, height):
+    def get_prop(self, left, top, width, height,matching_para):
         area = {"left": left, "top": top, "width": width, "height": height}
         with mss.mss() as sct:
             scene = '未知'
@@ -293,8 +107,8 @@ class my_image:
             screen_gray = cv2.cvtColor(area_capture,cv2.COLOR_BGR2GRAY)
 
             # 判断场景
-            scene = self.matching_prop(screen_gray)
-            print('检测到1:', scene)
+            scene = self.matching_prop(screen_gray,matching_para)
+            # print('检测到1:', scene)
             return scene
 
 
@@ -303,11 +117,25 @@ class my_image:
             #     cv2.destroyAllWindows()
                 #     break
 
-    def matchaing_prop_location(self,scene_gray):
-        flag_dict = self.prop_flag
-        flag_path = '../pic/prop_flag/'
+    def matchaing_prop_location(self,scene_gray,matching_para):
+        if matching_para == "herbs":
+            flag = self.herbs_flag
+            flag_similar = 0.65
+            flag_dict = self.herbs_dict
+            flag_path = '../pic/herbs_flag/'
+        elif matching_para == "pet_drinks":
+            flag = self.pet_drinks_flag
+            flag_similar = 0.65
+            flag_dict = self.pet_drinks_dict
+            flag_path = '../pic/pet_drinks_flag/'
+        elif matching_para == "scene":
+            flag = self.scene_flag
+            flag_similar = 0.85
+            flag_dict = self.scene_dict
+            flag_path = '../pic/scene_flag/'
 
-        for i in flag_dict:
+
+        for i in flag:
             try:
                 # 获取预设地图场景
                 flag_scene = cv2.imread(flag_path+i)
@@ -318,7 +146,7 @@ class my_image:
                 # 在大图片中查找小图片
                 result = cv2.matchTemplate(scene_gray, flag_scene_gray, cv2.TM_CCOEFF_NORMED)
                 # 筛选结果
-                locations = np.where(result >= 0.65)
+                locations = np.where(result >= flag_similar)
                 # 用 np 筛选一下结果高于 0.85的
                 # print(locations)
 
@@ -327,12 +155,12 @@ class my_image:
                 # 将结果再次处理一下，仅保留坐标值
                 if len(locations) > 0:
                     return (locations[0][0],locations[0][1])
-                return (0,0)
+                # return (0,0)
             except Exception as e:
                 logging.error(f"处理场景时发生异常： {e}")
                 return "未知物品坐标"
-
-    def get_prop_location(self, left, top, width, height):
+        return (0,0)
+    def get_prop_location(self, left, top, width, height,matching_para):
         area = {"left": left, "top": top, "width": width, "height": height}
         with mss.mss() as sct:
             # scene = '未知'
@@ -342,24 +170,20 @@ class my_image:
             area_capture = np.array(area_capture)#调用 numpy 库将 mss 库的截屏转换一下,并赋值为变量 quyujieping
             screen_gray = cv2.cvtColor(area_capture,cv2.COLOR_BGR2GRAY)
 
-            location = self.matchaing_prop_location(screen_gray)
-            print('物品坐标为：')
-            return (location[0]+left,location[1]+top)
+            location = self.matchaing_prop_location(screen_gray,matching_para)
+            print(matching_para,'坐标为：')
+            return (location[0],location[1])
 
 
 if __name__ == "__main__":
+
     a = my_image()
-    # a.screen_whole_capture('test_whole')
-    # a.screen_area_capture('test_area',100,100,300,200)
-    # a.screen_area_display(25,25,1000,800)
-    # a.screen_continuous_display(30,30,1000,800)
-    # a.get_scene(30,30,1000,800)
-    # print(a.get_scene(30,30,1000,800))
-    print(a.get_prop(30, 30, 1000, 800))
+    print(a.get_prop(30, 30, 1000, 800,"herbs"))
     time.sleep(0.1)
-    # print(a.get_scene(30, 30, 1000, 800))
-    # time.sleep(0.1)
-    print(a.get_prop_location(30, 30, 1000, 800))
+
+    print(a.get_prop_location(30, 30, 1000, 800,"herbs"))
+    time.sleep(0.1)
+
 
 
 

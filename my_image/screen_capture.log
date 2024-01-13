@@ -8887,3 +8887,11 @@
 2024-01-03 17:00:10 - ERROR - 无法加载场景图片： 5.jpg
 2024-01-04 11:21:32 - ERROR - 无法加载场景图片： 1.png
 2024-01-04 11:21:32 - ERROR - 无法加载场景图片： 1.png
+2024-01-04 20:25:10 - ERROR - 无法加载场景图片： 2.jpg
+2024-01-04 20:27:12 - ERROR - 无法加载场景图片： 2.jpg
+2024-01-04 21:54:10 - ERROR - 处理场景时发生异常： 'my_image' object has no attribute 'flag_dict'
+2024-01-04 21:54:10 - ERROR - 处理场景时发生异常： 'my_image' object has no attribute 'flag_dict'
+2024-01-04 21:54:22 - ERROR - 处理场景时发生异常： 'my_image' object has no attribute 'flag_dict'
+2024-01-04 21:54:22 - ERROR - 处理场景时发生异常： 'my_image' object has no attribute 'flag_dict'
+2024-01-04 21:54:25 - ERROR - 处理场景时发生异常： 'my_image' object has no attribute 'flag_dict'
+2024-01-04 21:54:25 - ERROR - 处理场景时发生异常： 'my_image' object has no attribute 'flag_dict'
